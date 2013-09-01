@@ -1,13 +1,14 @@
 #include <GL/glut.h>
 
 int p1[] = {10,20};
-int p2[] = {40,55};
+int p2[] = {100,400};
 int p3[] = {60,20};
 int p4[] = {80,140};
 int p5[] = {180,90};
 
-//GLsizei winW = 500, winH = 500;
-GLsizei winW = 1000, winH = 1000;
+int square[4][2] = {{10,20}, {110,20}, {110,130}, {10,130}};
+
+GLsizei winW = 1024, winH = 768;
 void init () {
     glClearColor (1,1,1,0); // white
 }
@@ -15,13 +16,14 @@ void init () {
 void wireQuadSurfs () {
     glClear (GL_COLOR_BUFFER_BIT);
 
-    gluLookAt (2.0,2.0,2.0, 0.0,0.0,0.0, 0.0,0.0,1.0);
+//    gluLookAt (2.0,2.0,2.0, 0.0,0.0,0.0, 0.0,0.0,1.0);
 
     glColor3f (0,0,1);
     glPushMatrix ();
-    glTranslatef (1.0, 1.0, 0.0);
-    glutWireSphere (2, 100, 50);
-    glPopMatrix ();
+    glutSolidSphere(0.1, 20, 20);
+//    glTranslatef (1.0, 1.0, 0.0);
+//    glutWireSphere (0.75, 100, 50);
+    glPopMatrix (); 
 
     glColor3f (0.0, 1.0, 0.0);              // set line segment color to red
     glBegin (GL_POLYGON);
@@ -30,15 +32,15 @@ void wireQuadSurfs () {
         glVertex2iv (p3);
         glVertex2iv (p4);
         glVertex2iv (p5);
-    glEnd ();
+    glEnd (); 
 
+    // SQUARE
     glColor3f (1.0, 0.5, 0.0);              // set line segment color to red
     glBegin (GL_LINE_LOOP);
-        glVertex2iv (p1);
-        glVertex2iv (p2);
-        glVertex2iv (p3);
-        glVertex2iv (p4);
-        glVertex2iv (p5);
+        glVertex2iv (square[0]);
+        glVertex2iv (square[1]);
+        glVertex2iv (square[2]);
+        glVertex2iv (square[3]);
     glEnd ();
 
     glBegin(GL_QUADS); // of the color cube
@@ -85,7 +87,7 @@ void wireQuadSurfs () {
    glVertex3f(1.0f, -1.0f, 1.0f);
    glVertex3f(1.0f, -1.0f, -1.0f);
  
-glEnd(); // of the color cube
+glEnd(); // of the color cube 
 
 /*    glPushMatrix ();
     glTranslatef (1.0, -0.5, 0.5);
@@ -104,13 +106,46 @@ glEnd(); // of the color cube
     glFlush ();
 }
 
-void winReshapeFcn (GLint newW, GLint newH) {
-    glViewport (0, 0, newW, newH);
-    glMatrixMode (GL_PROJECTION);
-    glOrtho (-2.0, 2.0, -2.0, 2.0, 0.0, 5.0);
+void winReshapeFcn (GLint W, GLint H) {
+    /* glViewport (0, 0, W, H);
+       glMatrixMode (GL_PROJECTION);
+       glOrtho (-2.0, 2.0, -2.0, 2.0, 0.0, 5.0);
 
-    glMatrixMode (GL_MODELVIEW);
-    glClear (GL_COLOR_BUFFER_BIT);
+       glMatrixMode (GL_MODELVIEW);
+       glClear (GL_COLOR_BUFFER_BIT); */
+
+    glViewport(0, 0, W, H);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0f, W, H, 0.0f, 0.0f, 1.0f);
+ //   glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity(); 
+
+    /*if (H == 0) H = 1;                        // To prevent divide by 0
+    GLfloat aspect = (GLfloat)W / (GLfloat)H; // Compute aspect ratio
+
+    // Set the viewport (display area on the window) to cover the whole application window
+    glViewport(0, 0, W, H);
+
+    // Adjust the aspect ratio of projection's clipping volume to match the viewport 
+    glMatrixMode(GL_PROJECTION);   // Select Projection matrix
+    glLoadIdentity();              // Reset the Projection matrix
+
+    // Either "perspective projection" or "orthographic projection", NOT both
+    // 3D Perspective Projection (fovy, aspect, zNear, zFar), relative to camera's eye position 
+    // gluPerspective(45.0, aspect, 0.1, 100.0);
+
+    // OR
+    // 3D Orthographic Projection (xLeft, xRight, yBottom, yTop, zNear, zFar),
+    // relative to camera's eye position.
+    if (W <= H) 
+        glOrtho(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect, -1.0, 1.0);  // aspect <= 1
+    else 
+        glOrtho(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0, -1.0, 1.0);  // aspect > 1
+
+    // Reset the Model-View matrix
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity(); */
 }
 
 int main (int argc, char **argv) {
