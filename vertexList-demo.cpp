@@ -1,0 +1,68 @@
+#include "vertexList.h"
+
+// Default Main Function implementation for OpenGL programs
+int iWindowSize[2] = {800, 600};
+int iWindowPosition[2] = {80, 80};
+
+
+// Global Variables
+double rotate_y          = 0.0;
+double rotate_x          = 0.0;
+double zoom              = 1.0;
+
+// Constants
+const double rotate_step = 5.0;
+const double zoom_step   = 0.01;
+const double cube_size   = 1.0;
+const double center_x    = 0.0;
+const double center_y    = 0.0;
+const double center_z    = 0.0;
+
+void keyboard(unsigned char key, int x, int y) {
+    if (key == 'd')
+        rotate_y += rotate_step;
+    else if (key == 'a')
+        rotate_y -= rotate_step;
+    else if (key == 'w')
+        rotate_x += rotate_step;
+    else if (key == 's')
+        rotate_x -= rotate_step;
+    else if (key == 'q')
+        zoom *= (1.0 + zoom_step);
+    else if (key == 'e')
+        zoom *= (1.0 - zoom_step);
+
+    glutPostRedisplay();
+}
+
+void display () {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    float vertices[][3] = 
+        {
+            {0,1,1},
+            {1,1,1},
+            {1,0,1},
+            {0,0,1},
+            {0,1,0},
+            {1,1,0},
+            {1,0,0},
+            {0,0,0}
+        };
+
+    vector<Point3D> cubeVertices (&vertices[0], &vertices[0]+8);
+    float color[3] = {1.0, 0.5, 0.2};
+    glRotatef(rotate_x, 1.0, 0.0, 0.0);
+    glRotatef(rotate_y, 0.0, 1.0, 0.0);
+    glScaled(zoom, zoom, zoom);
+
+    drawObjectGivenVertices (CUBE, cubeVertices, color);
+//    drawObjectGivenVertices (TRIANGLE, cubeVertices, color);
+}
+
+int main (int argc, char **argv) {
+  glutMainDefault (argc, argv, "Vertex List", display, keyboard, iWindowSize, iWindowPosition);
+
+    return 0;
+}
+

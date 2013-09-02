@@ -106,7 +106,7 @@ void display() {
     gluCylinder (cylinder, 0.6, 0.6, 1.5, 6, 4);
     glPopMatrix ();
 
-    /*Sweep representation of Solids 
+    /* Sweep representation of Solids 
      * Hour Glass
      * */
     float d = 1.0;
@@ -165,3 +165,5 @@ int main(int argc, char** argv) {
   init();
   glutMainLoop();
 }
+
+
