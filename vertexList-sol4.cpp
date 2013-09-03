@@ -89,7 +89,8 @@ void display () {
     glColor3f(0, 0, 1); glVertex3f(0, 0, 0); glVertex3f(0, 0, 10);
     glEnd();
 
-    drawObjectGivenVertices (POLYGON, cubeVertices1, color);
+    //drawObjectGivenVertices (POLYGON, cubeVertices1, color);
+    drawObjectGivenVertices (PLANE_MESH, cubeVertices1, color);
 //    drawObjectGivenVertices (CUBE, cubeVertices2, color);
 //    drawObjectGivenVertices (CUBE, cubeVertices3, color);
 //    drawObjectGivenVertices (TRIANGLE, cubeVertices, color);

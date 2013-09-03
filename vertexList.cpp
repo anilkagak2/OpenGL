@@ -34,11 +34,90 @@ void drawTrianglurMeshes (vector<Point3D> vertices, float color[3]) {
     glPopMatrix ();
     glFlush ();
 }
+/*****************************/
 
+int plane_width = 2; // amount of columns
+int plane_height = 2; // amount of rows
+
+int total_vertices = (plane_width + 1) * (plane_height + 1);
+typedef struct CIwFVec2 {
+    float x;
+    float y;
+} CIwFVec2;
+
+CIwFVec2 *planeVert = new CIwFVec2[total_vertices];
+
+int numIndPerRow = plane_width * 2 + 2;
+int numIndDegensReq = (plane_height - 1) * 2;
+int total_indices = numIndPerRow * plane_height + numIndDegensReq;
+int *planeInd = new int[total_indices];
+#include <cstring>
+
+void render (int width, int height, CIwFVec2 *vertices, int *indices);
+void render() {
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glVertexPointer( 2, GL_FLOAT, 0, planeVert );
+    glDrawElements( GL_LINE_STRIP, total_indices, GL_UNSIGNED_INT, planeInd );
+    glDisableClientState( GL_VERTEX_ARRAY );
+}
+
+void render (int width, int height, CIwFVec2 *vertices, int *indices)
+{
+    memset (planeVert, 0, sizeof(struct CIwFVec2) * total_vertices);
+    width++;
+    height++;
+
+    int size = sizeof(CIwFVec2);
+    // Set up vertices
+    for(int y = 0; y < height; y++)
+    {
+        int base = y * width;
+        for(int x = 0; x < width; x++)
+        {
+            int index = base + x;
+            CIwFVec2 *v = vertices + index;
+            v->x = (float) x;
+            v->y = (float) y;
+//            Debug::PrintDebug("%d: %f, %f", index, v->x, v->y);
+        }
+    }
+
+  //  Debug::PrintDebug("-------------------------");
+
+    // Set up indices
+    int i = 0;
+    height--;
+    for(int y = 0; y < height; y++)
+    {
+        int base = y * width;
+
+        //indices[i++] = (uint16)base;
+        for(int x = 0; x < width; x++)
+        {
+            indices[i++] = (base + x);
+            indices[i++] = (base + width + x);
+        }
+        // add a degenerate triangle (except in a last row)
+        if(y < height - 1)
+        {
+            indices[i++] = ((y + 1) * width + (width - 1));
+            indices[i++] = ((y + 1) * width);
+        }
+    }
+
+    /*for(int ind=0; ind < i; ind++)
+        Debug::PrintDebug("%d ", indices[ind]); */
+}
+
+/****************************/
 void drawPolygons (vector<Point3D> vertices, float color[3]) {
+     // add polygons here
     // Represent the cube
     glPushMatrix ();
-    glBegin (GL_POLYGON); 
+
+ //   glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+//    glBegin (GL_POLYGON); 
+    glBegin (GL_TRIANGLE_FAN); 
     glColor3f (color[0], color[1], color[2]); // green
 
     // Front-face 0->1->2->3
@@ -46,6 +125,8 @@ void drawPolygons (vector<Point3D> vertices, float color[3]) {
         glVertex3fv (vertices[i]);
 
     glEnd ();
+ //   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
     glPopMatrix ();
     glFlush ();
 }
@@ -118,6 +199,11 @@ void drawObjectGivenVertices (enum TypeOfObject typeOfObject, vector<Point3D> ve
             break;
         case POLYGON:
             drawPolygons (vertices, color);
+            break;
+        case PLANE_MESH:
+            //render (pla);
+            render (plane_width,plane_height, planeVert, planeInd);
+            render ();
             break;
         default:
             cerr << "OBJECT NOT SUPPORTED" << endl;

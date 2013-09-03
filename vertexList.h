@@ -23,6 +23,7 @@ enum TypeOfObject {
     TRIANGULAR_MESHES,
     TRIANGLE,
     CUBE,
+    PLANE_MESH,
     POLYGON
 };
 
